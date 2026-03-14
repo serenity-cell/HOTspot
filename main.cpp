@@ -1,26 +1,31 @@
 #include "src/PortScanner.hpp"
 #include <iostream>
 
-int main (int arg_count, char* arg_vector[]) {
+void userOptions(int &arg_count, char **&arg_vector, std::string &ip_input,
+               int &port_input) {
+  for (int i = 1; i < arg_count; i++) {
+
+    // grabs the ip address
+    if (strcmp(arg_vector[i], "-ip") == 0) {
+      ip_input = arg_vector[i + 1];
+      // std::cout << ip_input << " \n";
+    }
+
+    // grabs the port input
+    if (strcmp(arg_vector[i], "-port") == 0) {
+      port_input = std::stoi(arg_vector[i + 1]);
+      // std::cout << port_input << " \n";
+    }
+  }
+}
+
+int main(int arg_count, char *arg_vector[]) {
   PortScanner scanner;
   std::string ip_input = " ";
   int port_input = 0 ;
 
   // the cli commands and available arguments
-  for (int i = 1; i < arg_count; i++) {
-
-    //grabs the ip address
-    if (strcmp(arg_vector[i], "-ip") == 0) {
-      ip_input = arg_vector[i + 1];
-      //std::cout << ip_input << " \n";
-    }
-
-    // grabs the port input 
-    if (strcmp(arg_vector[i], "-port") == 0) {
-      port_input = std::stoi(arg_vector[i + 1]);
-      //std::cout << port_input << " \n";
-    }
-  }
+  userOptions(arg_count, arg_vector, ip_input, port_input);
 
   // outputs the necessary format when not inputting any ip address arguement
   if (ip_input.empty()) {
@@ -39,5 +44,4 @@ int main (int arg_count, char* arg_vector[]) {
     // for when you want to check a specific port
     scanner.scan(ip_input, port_input);
   }
-  
 }
