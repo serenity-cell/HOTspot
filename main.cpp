@@ -22,7 +22,7 @@ int main (int arg_count, char* arg_vector[]) {
     }
   }
 
-  // outputs the necessary format when nut inputting any ip addres arguement
+  // outputs the necessary format when not inputting any ip address arguement
   if (ip_input.empty()) {
         std::cerr << "Usage: ./HOTspot -ip <address> -port <port>\n";
         return 1;
@@ -35,7 +35,7 @@ int main (int arg_count, char* arg_vector[]) {
     // once don scanning it also shows the total closed ports
     std::cout <<  " \n" << "scan done " << scanner.closed_count << " total closed ports \n";
   }
-  else {
+  else if (port_input != 0 ) {
     // for when you want to check a specific port
     scanner.scan(ip_input, port_input);
   }
