@@ -25,7 +25,7 @@ int main(int arg_count, char *arg_vector[]) {
   // the cli commands and available arguments
   userOptions(arg_count, arg_vector, ip_input, port_input);
 
-  std::cout << "PORT      STATE \n";
+  std::cout << "PORT      STATE     SERVICE\n";
   // outputs the necessary format when not inputting any ip address arguement
   if (ip_input.empty()) {
         std::cerr << "Usage: ./HOTspot -ip <address> -port <port>\n";
@@ -33,7 +33,7 @@ int main(int arg_count, char *arg_vector[]) {
   } 
   else if (port_input == 0) {
     // runs both ip and port through the scanner
-    for (int port = 1; port <= 4040; port++) {
+    for (int port = 1; port <= 1023; port++) {
       scanner.scan(ip_input, port);
     }
   }

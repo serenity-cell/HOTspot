@@ -3,10 +3,38 @@
 #include <boost/asio/ip/udp.hpp>
 #include <iostream>
 #include <iomanip>
+#include <unordered_map>
 #include <ostream>
  // TODO: add all scanner logic here [DO NOT add user arguements here (cli responses)]
 
 void PortScanner::scan(std::string ip, int port) {
+
+    
+    const std::unordered_map<int, std::string> portServices = {
+        {21,    "FTP"},
+        {22,    "SSH"},
+        {23,    "Telnet"},
+        {25,    "SMTP"},
+        {53,    "DNS"},
+        {67,    "DHCP"},
+        {68,    "DHCP"},
+        {80,    "HTTP"},
+        {110,   "POP3"},
+        {143,   "IMAP"},
+        {443,   "HTTPS"},
+        {445,   "SMB"},
+        {3306,  "MySQL"},
+        {3389,  "RDP"},
+        {5900,  "VNC"},
+        {8080,  "HTTP-Alt"},
+        {8443,  "HTTPS-Alt"},
+        {49152, "Dynamic"},
+        {62078, "iPhone-Sync"}
+    };
+
+    auto it = portServices.find(port);
+    std::string service = (it != portServices.end()) ? it->second : "Unknown";
+
     // the main engine
     boost::asio::io_context io;
 
@@ -22,8 +50,9 @@ void PortScanner::scan(std::string ip, int port) {
         tcpSocket.connect(endPointTcp);
         // In your scan output:
         std::cout << std::left
-          << std::setw(10) << port        // port column, 10 chars wide
-          << std::setw(10) << "OPEN"      // state column, 10 chars wide
+          << std::setw(10) << port       
+          << std::setw(10) << "OPEN"  
+          << std::setw(10) << service 
           << std::endl;
     }
     catch (boost::system::system_error& e) {
