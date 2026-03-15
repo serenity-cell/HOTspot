@@ -1,5 +1,6 @@
 #include "src/PortScanner.hpp"
 #include <iostream>
+#include <ostream>
 
 void userOptions(int &arg_count, char **&arg_vector, std::string &ip_input, int &port_input) {
   for (int i = 1; i < arg_count; i++) {
@@ -25,6 +26,8 @@ int main(int arg_count, char *arg_vector[]) {
   // the cli commands and available arguments
   userOptions(arg_count, arg_vector, ip_input, port_input);
 
+
+  std::cout << "scanning host: " << ip_input << "\n";
   std::cout << "PORT      STATE     SERVICE\n";
   // outputs the necessary format when not inputting any ip address arguement
   if (ip_input.empty()) {
@@ -43,5 +46,5 @@ int main(int arg_count, char *arg_vector[]) {
   }
 
   // once don scanning it also shows the total closed ports
-  std::cout <<  " \n" << "NOT SHOWN: " << scanner.closed_count << " closed ports \n";
+  std::cout <<  " \n" << "NOT SHOWN: " << scanner.closed_count << " closed ports" << std::endl;
 }
