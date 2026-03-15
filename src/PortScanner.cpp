@@ -9,7 +9,6 @@
 
 void PortScanner::scan(std::string ip, int port) {
 
-    
     const std::unordered_map<int, std::string> portServices = {
         {21,    "FTP"},
         {22,    "SSH"},
@@ -31,7 +30,6 @@ void PortScanner::scan(std::string ip, int port) {
         {49152, "Dynamic"},
         {62078, "iPhone-Sync"}
     };
-
     auto it = portServices.find(port);
     std::string service = (it != portServices.end()) ? it->second : "Unknown";
 
@@ -46,8 +44,10 @@ void PortScanner::scan(std::string ip, int port) {
     boost::asio::ip::udp::endpoint endPointUdp (boost::asio::ip::make_address(ip), port);
     boost::asio::ip::udp::socket udpSocket (io);
 
+    // checks the ports
     try {
         tcpSocket.connect(endPointTcp);
+        
         // In your scan output:
         std::cout << std::left
           << std::setw(10) << port       
