@@ -1,4 +1,5 @@
 #include "PortScanner.hpp"
+#include <boost/asio/error.hpp>
 #include <boost/asio/ip/address.hpp>
 #include <boost/asio/ip/udp.hpp>
 #include <iostream>
@@ -46,8 +47,9 @@ void PortScanner::scan(std::string ip, int port) {
 
     // checks the ports
     try {
+
         tcpSocket.connect(endPointTcp);
-        
+
         // In your scan output:
         std::cout << std::left
           << std::setw(10) << port       
@@ -56,8 +58,18 @@ void PortScanner::scan(std::string ip, int port) {
           << std::endl;
     }
     catch (boost::system::system_error& e) {
-        closed_count ++;
-        //std::cout << "Port " << port << " CLOSED — " << e.what() << "\n";
+        if (e.code() == boost::asio::error::connection_refused) {
+            closed_count ++;
+            //std::cout << "Port " << port << " CLOSED — " << e.what() << "\n";
+        }
+        else if (e.code() == boost::asio::error::timed_out) {
+            std::cout << std::left
+            << std::setw(10) << port       
+            << std::setw(10) << "FILTERED"  
+            << std::setw(10) << service 
+            << std::endl;
+        }
+        
     }
     tcpSocket.close();
 }
