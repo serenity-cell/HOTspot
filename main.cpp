@@ -23,13 +23,16 @@ int main(int arg_count, char *arg_vector[]) {
   std::string ip_input = " ";
   int port_input = 0 ;
 
+  
+
   // the cli commands and available arguments
   userOptions(arg_count, arg_vector, ip_input, port_input);
 
 
   std::cout << "scanning host: " << ip_input << "\n";
   std::cout << "PORT      STATE     SERVICE\n";
-  scanner.startScan(ip_input, 0, 10000);
+  scanner.startScan(ip_input, 1, 65535);
+  
   // once don scanning it also shows the total closed ports
   std::cout <<  " \n" << "NOT SHOWN: " << scanner.closed_count << " closed ports" << std::endl;
 }
