@@ -63,6 +63,15 @@ void PortScanner::portScan(std::string ip, int port, boost::asio::io_context &io
 
     auto pTimer = std::make_shared<boost::asio::steady_timer> (io, std::chrono::seconds(2));
 
+    // TODO: 
+    // Create shared_ptr<steady_timer> alongside your socket
+    // Add pTimer to your connect callback capture list
+    // Cancel timer inside connect callback when connection completes
+    // Create timer callback that cancels socket and prints FILTERED
+    // Call pTimer->async_wait(timerCallback)
+
+
+    
     // callback
     std::function<void(const boost::system::error_code& error)> callback = [this, port, service, pTcpSocket, endPointTcp, pTimer] 
     (const boost::system::error_code& error) {
