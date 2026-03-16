@@ -3,11 +3,13 @@
 #include <boost/asio/io_context.hpp>
 #include <boost/asio/ip/address.hpp>
 #include <boost/asio/ip/udp.hpp>
+#include <chrono>
 #include <iostream>
 #include <iomanip>
 #include <memory>
 #include <unordered_map>
 #include <ostream>
+#include <thread>
 
  void PortScanner::startScan(std::string ip, int start_port, int end_port) {
     // the engine
@@ -21,8 +23,10 @@
         in_flight++;
 
         if (in_flight == 100){ 
+            // runs the engine in batches of the 
             io.run();
             io.restart();
+            std::this_thread::sleep_for(std::chrono::milliseconds(1));
 
             in_flight = 0;
         }
@@ -60,21 +64,35 @@ void PortScanner::portScan(std::string ip, int port, boost::asio::io_context &io
     // variables to connect to tcp socket 
     boost::asio::ip::tcp::endpoint endPointTcp (boost::asio::ip::make_address(ip), port);
     auto pTcpSocket = std::make_shared<boost::asio::ip::tcp::socket>(io);
+    auto pTimer = std::make_shared<boost::asio::steady_timer> (io);
+    pTimer->expires_after(std::chrono::seconds(2));
 
-    auto pTimer = std::make_shared<boost::asio::steady_timer> (io, std::chrono::seconds(2));
-
-    // TODO: 
-    // Create shared_ptr<steady_timer> alongside your socket
-    // Add pTimer to your connect callback capture list
-    // Cancel timer inside connect callback when connection completes
-    // Create timer callback that cancels socket and prints FILTERED
-    // Call pTimer->async_wait(timerCallback)
-
-
-    
-    // callback
-    std::function<void(const boost::system::error_code& error)> callback = [this, port, service, pTcpSocket, endPointTcp, pTimer] 
+    // timer callback function
+    std::function<void (const boost::system::error_code& error)> TimerCallback = [this, port, service, pTimer, pTcpSocket] 
     (const boost::system::error_code& error) {
+
+        if (error.value() == 0) { 
+            pTcpSocket->cancel();
+            // In your scan output:
+            std::cout << std::left
+            << std::setw(10) << port       
+            << std::setw(19) << "\033[33mFILTERED\033[0m"
+            << std::setw(10) << service 
+            << std::endl;
+        }
+        else if (error == boost::asio::error::operation_aborted) {
+            return;
+        }
+        else {
+            return;
+        }
+
+    };
+
+    // callback
+    std::function<void(const boost::system::error_code& error)> callback = [this, port, service, pTcpSocket, pTimer] 
+    (const boost::system::error_code& error) {
+         pTimer->cancel();
         
         // checks the ports
         if (error.value() == 0) {
@@ -82,18 +100,12 @@ void PortScanner::portScan(std::string ip, int port, boost::asio::io_context &io
             // In your scan output:
             std::cout << std::left
             << std::setw(10) << port       
-            << std::setw(10) << "OPEN"  
+            << std::setw(19) << "\033[32mOPEN\033[0m"
             << std::setw(10) << service 
             << std::endl;
         }
         else if (error == boost::asio::error::operation_aborted) {
-            // In your scan output:
-            std::cout << std::left
-            << std::setw(10) << port       
-            << std::setw(10) << "FILTERED"  
-            << std::setw(10) << service 
-            << std::endl;
-
+            return;
         }
         else {
             this->closed_count ++;
@@ -102,5 +114,6 @@ void PortScanner::portScan(std::string ip, int port, boost::asio::io_context &io
     };
 
     pTcpSocket->async_connect( endPointTcp, callback);
+    pTimer->async_wait(TimerCallback);
 
 }
