@@ -31,8 +31,9 @@ int main(int arg_count, char *arg_vector[]) {
 
   std::cout << "scanning host: " << ip_input << "\n";
   std::cout << "PORT      STATE     SERVICE\n";
+  std::cout << "------------------------------ \n";
   scanner.startScan(ip_input, 1, 65535);
-  
+
   // once don scanning it also shows the total closed ports
   std::cout <<  " \n" << "NOT SHOWN: " << scanner.closed_count << " closed ports" << std::endl;
 }
