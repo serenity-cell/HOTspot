@@ -12,25 +12,45 @@
 #include <thread>
 
 void PortScanner::extracted(int &aggressive, int &batch_quantity, int &batch_timer) {
-  if (aggressive == 0) {
-    batch_quantity = 4;
-    batch_timer = 2000;
-  } else if (aggressive == 1) {
-    batch_quantity = 6;
-    batch_timer = 1500;
-  } else if (aggressive == 2) {
-    batch_quantity = 20;
-    batch_timer = 1000;
-  } else if (aggressive == 3) {
-    batch_quantity = 50;
-    batch_timer = 700;
-  } else if (aggressive == 4) {
-    batch_quantity = 80;
-    batch_timer = 400;
-  } else if (aggressive == 5) {
-    batch_quantity = 150;
-    batch_timer = 100;
-  }
+
+    switch (aggressive) {
+        case 0: 
+        batch_quantity = 4;
+        batch_timer = 2000;
+        break;
+
+        case 1: 
+        batch_quantity = 6;
+        batch_timer = 1500;
+        break;
+
+        case 2:
+        batch_quantity = 20;
+        batch_timer = 1000;
+        break;
+
+        case 3: 
+        batch_quantity = 50;
+        batch_timer = 700;
+        break;
+
+        case 4:
+        batch_quantity = 80;
+        batch_timer = 400;
+        break;
+
+        case 5:
+        batch_quantity = 150;
+        batch_timer = 100;
+        break;
+
+        default:
+        // defaults to the middle ground
+        batch_quantity = 50;
+        batch_timer =  700;
+        break;
+      
+    }
 }
 
 void PortScanner::startScan(std::string ip, int start_port, int end_port, int aggressive) {
@@ -47,17 +67,16 @@ void PortScanner::startScan(std::string ip, int start_port, int end_port, int ag
 
     extracted(aggressive, batch_quantity, batch_sleep);
 
-    for (; start_port < end_port; start_port++) {
+    for (; start_port <= end_port; start_port++) {
         portScan(ip, start_port, io);
         in_flight++;
 
         if (in_flight == batch_quantity) {
-        // runs the engine in batches of the
-        io.run();
-        io.restart();
-        std::this_thread::sleep_for(std::chrono::milliseconds(batch_sleep));
-
-        in_flight = 0;
+            // runs the engine in batches
+            io.run();
+            io.restart();
+            std::this_thread::sleep_for(std::chrono::milliseconds(batch_sleep));
+            in_flight = 0;
         }
     }
     io.run();
