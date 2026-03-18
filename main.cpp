@@ -1,6 +1,5 @@
 #include "src/PortScanner.hpp"
 #include <iostream>
-#include <ostream>
 
 void userOptions(int &arg_count, char **&arg_vector, std::string &ip_input, int &port_input, int &aggressive) {
   for (int i = 1; i < arg_count; i++) {
