@@ -11,7 +11,7 @@
 #include <ostream>
 #include <thread>
 
-void PortScanner::extracted(int &aggressive, int &batch_quantity, int &batch_timer) {
+void PortScanner::intensity(int &aggressive, int &batch_quantity, int &batch_timer) {
 
     switch (aggressive) {
         case 0: 
@@ -65,7 +65,7 @@ void PortScanner::startScan(std::string ip, int start_port, int end_port, int ag
     int batch_quantity;
     int batch_sleep;
 
-    extracted(aggressive, batch_quantity, batch_sleep);
+    intensity(aggressive, batch_quantity, batch_sleep);
 
     for (; start_port <= end_port; start_port++) {
         portScan(ip, start_port, io);

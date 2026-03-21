@@ -8,7 +8,7 @@
 
 class PortScanner { 
     public:
-      void extracted(int &aggressive, int &batch_quanity, int &batch_timer);
+      void intensity(int &aggressive, int &batch_quanity, int &batch_timer);
       void startScan(std::string ip, int start_port, int end_port, int agressive);
       void portScan(std::string ip, int port, boost::asio::io_context &io);
       int closed_count = 0;
