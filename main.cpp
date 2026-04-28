@@ -1,7 +1,14 @@
 #include "src/PortScanner.hpp"
 #include <iostream>
 
+// --to do-- 
+// expand upon the man page
+
 void userOptions(int &arg_count, char **&arg_vector, std::string &ip_input, int &port_input, int &aggressive) {
+  if (strcmp(arg_vector[1], "-man") == 0) {
+    std::cout << "\n Usage: ./HOTspot  -ip [ip address] -port [up to what number of port to scan(default: 65535)] -t [1-5, this is the aggresivity of the scanner, meaning speed and quantity (default: 3)] \n ";
+    std::cout << " DO NOTE YOU MIGHT HAVE TO USE 'cmake build ..' AND 'cd build' IN THAT ORDER BEFORE YOU CAN USE THE SCANNER \n";
+  }
   for (int i = 1; i < arg_count; i++) {
 
     // grabs the ip address
